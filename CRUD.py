@@ -48,10 +48,18 @@ class boarPostgre():
 ########################CUSTOM FUNCTIONS#################################################
 
     def custom_insert(self,query:str):
+        """Executes the query you send without return
+        Usage:custom_insert(String:query text)
+        Example:custom_insert(INSERT INTO User VALUES(Leonardo,32,"lalalal") ON CONFLICT DO SET Age=User.Age+1) 
+        """
         self._cursor_execute(query)
 
     def custom_retrieve(self,query:str):
-        self._cursor_execute(query,True)
+        """Executes the query you send with return
+        Usage:custom_retrieve(String:query text)
+        Exemple:custom_retrieve(SELECT Name FROM User ORDER BY Age ASC LIMIT 10)
+        """
+        return self._cursor_execute(query,True)
 
 
 ########################Crud - 'CREATE' FUNCTIONS#################################################
@@ -136,6 +144,7 @@ class boarPostgre():
         The third argument is the value and his corresponding collum that will be searched
         """
         
+
         #String command formatting
         command = f"Select {collum} from {table} where {condition[0]} = '{condition[1]}'"
 
@@ -180,5 +189,5 @@ class boarPostgre():
 
 ########################CRUD Object########################################################################
 
-db = boarPostgre("CREDENCIAIS SECRETAS","CREDENCIAIS SECRETAS","CREDENCIAIS SECRETAS","CREDENCIAIS SECRETAS",666)
+db = boarPostgre("CREDS","CREDS","CREDS","CREDS",666)
 ####################################################################################################################
