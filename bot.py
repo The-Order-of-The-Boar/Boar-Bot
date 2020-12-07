@@ -2,9 +2,9 @@
 import discord
 from datetime import datetime
 
-import commands
+from Internals import commands
+from Statistics import messages
 import server
-import Statistics.messages
 
 
 
@@ -37,9 +37,10 @@ async def on_member_join(member):
 @client.event
 async def on_message(message):
     
-    Statistics.messages.CountMessage(message.guild.id)
+    messages.CountMessage(message.guild.id)
     
     await commands.ParseMessage(message)
+
 
 
 

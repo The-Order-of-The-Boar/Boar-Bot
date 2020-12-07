@@ -82,7 +82,7 @@ class boarPostgre():
         self._cursor_execute(command)
 
 
-    def insert_value(self,table:str,values:list,ignore_on_conflicts:bool=False):
+    def insert_value(self,table:str,values:list,ignore_on_conflicts:bool=False,additional:str=""):
         """Inserts a new row in a given table\n
         Usage: insert_value("name of the table",["value1","value2","value3"....])\n
         Example: insert_value("User",["Leonardo","38","pass123"])\n
@@ -103,6 +103,8 @@ class boarPostgre():
         command += f" VALUES {values_data}"
         if ignore_on_conflicts:
             command += " ON CONFLICT DO NOTHING"
+        
+        command+= additional
 
         #Connection to database and command execution via cursor
         self._cursor_execute(command)
@@ -171,6 +173,8 @@ class boarPostgre():
         
         #Connection to database and command execution via cursor
         self._cursor_execute(command)
+    
+        
 
 
 ########################cruD - 'DELETE' FUNCTIONS##################################################
@@ -189,5 +193,5 @@ class boarPostgre():
 
 ########################CRUD Object########################################################################
 
-db = boarPostgre("CREDS","CREDS","CREDS","CREDS",666)
+db = boarPostgre("SECRET",5432)
 ####################################################################################################################
