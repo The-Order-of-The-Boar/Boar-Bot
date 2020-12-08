@@ -52,5 +52,15 @@ async def on_message(message):
 
 
 ##############################################################################################
-token = open("token.txt", 'r',encoding="utf-8").read()
+
+
+
+from os import environ
+
+token = "" 
+if("DYNO" in environ):
+    token = open("token.txt", 'r',encoding="utf-8").read()
+else:
+    token = open("debugToken.txt", 'r',encoding="utf-8").read()
+
 client.run(token)

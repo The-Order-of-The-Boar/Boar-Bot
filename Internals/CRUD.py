@@ -1,3 +1,5 @@
+
+
 class boarPostgre():
     """Python wrapper class created using psycopg2 library to connect to a PostgreSQL server and 
     executes basic operations in a simplified way.
@@ -193,5 +195,16 @@ class boarPostgre():
 
 ########################CRUD Object########################################################################
 
-db = boarPostgre("SECRET",5432)
+from os import environ
+import urllib.parse as urlparse
+
+db = None
+if("DYNO" in environ):
+    url = urlparse.urlparse(environ['DATABASE_URL'])
+    db = boarPostgre(url.hostname,url.path[1:],url.username,url.password,url.port)
+else:
+    creds = open("localCreds.txt", 'r',encoding="utf-8").read().splitlines()
+    db = boarPostgre(creds[0],creds[1],creds[2],creds[3],int(creds[4]))
+
+
 ####################################################################################################################

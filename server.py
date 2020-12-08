@@ -68,7 +68,6 @@ def GetListen(server_id:int):
     return db.retrieve_value("ServerConfigs","listen_channels",["id",server_id])[0][0]
 
 
-
     
 
 

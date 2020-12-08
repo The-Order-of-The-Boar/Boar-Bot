@@ -1,3 +1,6 @@
 token.txt
+debugToken.txt
 *__pycache__/
+boarbot/
+localCreds.py
 teste.py

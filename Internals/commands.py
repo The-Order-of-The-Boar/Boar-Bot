@@ -1,5 +1,6 @@
 import discord
 from datetime import datetime,timedelta
+from os import environ
 
 import server
 from Statistics import messages
@@ -10,8 +11,14 @@ async def ParseMessage(message):
     s_id = message.guild.id
     c_id = message.channel.id
 
+    prefix = {"std":"b","mod":"bm"}
+
+    #Defines the prefix accordingly to the bot host
+    if("DYNO" in environ):
+        prefix = {"std":"d","mod":"dm"}
+
     #Returns if doesn't have the command prefix
-    if(not message.content.startswith("b")):
+    if(not message.content.startswith(prefix["std"])):
         return
 
     com = message.content.split()
@@ -21,7 +28,7 @@ async def ParseMessage(message):
     
     ######Management Commands
     #Check if it's a management command and if the user has enough permissions
-    if(com[0]=="bm"):
+    if(com[0]==prefix["mod"]):
         manager = message.author.permissions_in(message.channel).manage_channels
 
         if (not manager):
