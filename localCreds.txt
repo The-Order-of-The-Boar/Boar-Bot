@@ -1,5 +1,0 @@
-localhost
-postgres
-postgres
-hentai666
-5432
