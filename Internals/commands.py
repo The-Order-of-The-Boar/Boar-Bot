@@ -3,7 +3,7 @@ from datetime import datetime,timedelta
 from os import environ
 
 from Management import server
-from Statistics import messages
+from Statistics import messages,rank
 from Internals import utils
 
 prefix = {"std":"b","mod":"bm"}
@@ -16,6 +16,7 @@ async def ParseMessage(message,client):
 
     s_id = message.guild.id
     c_id = message.channel.id
+
 
 
     #Returns if doesn't have the command prefix
@@ -69,7 +70,16 @@ async def ParseMessage(message,client):
 
         elif(com[1]=="setMessagesDay"):
 
-            messages.UpdateMessages(s_id,com[3],com[2])
+            date = datetime.strptime(com[3], '%d/%m/%Y').date()
+            
+            if(date)>datetime.now().date():
+                await message.channel.send("Não é possível definir a quantidade de mensagens do futuro")
+                return
+            if(int(com[2])<0):
+                await message.channel.send("Não é possível definir a quantidade de mensagens como negativa")
+                return  
+
+            messages.UpdateMessages(s_id,date,com[2])
             await message.channel.send(f"O número de mensagens do dia {com[3]} foi atualizado com sucesso para {com[2]}")
 
 
@@ -116,6 +126,9 @@ async def ParseMessage(message,client):
     elif(com[1]=="back"):
         
         back = int(com[2])
+        if(back<0):
+            await message.channel.send("Não há registros do futuro")
+            return
         o_date = datetime.now().date() - timedelta(days=back)
         mes = messages.GetMessagesByDay(s_id,o_date)
         if(mes==0):
@@ -128,6 +141,8 @@ async def ParseMessage(message,client):
 
         ##Checks if the user specifies a page
         if(len(com)>2):
+            if(com[2])<0:
+                await("Não há registros do futuro")
             data = messages.GetLastMessages(s_id,start=(int(com[2])-1)*10)
         else:
             data = messages.GetLastMessages(s_id)
@@ -142,15 +157,45 @@ async def ParseMessage(message,client):
         await message.channel.send(embed=embed,content=None)
     
     ########################Ranks
+    elif(com[1]=="rank"):
+
+        if(len(com)>2):
+            d_ago = int(com[2])
+            data = rank.getRankByWeek(s_id,d_ago)
+            
+            if(d_ago)<0:
+                await message.channel.send("Não há registros do futuro")
+                return
+        else:
+            data = rank.getRankByWeek(s_id)
+        
+        if len(data)==0:
+            await message.channel.send(f"Não há registro do ranking de {com[2]} semanas atrás")
+            return
+
+        table = utils.genTableRank(data,message.guild,client) 
+        embed = utils.genEmbed("Ranking",table,descp="Ranking de membros por mensagens \nenviadas na semana")
+        await message.channel.send(embed=embed,content=None)
 
     elif(com[1]=="serverRank"):
 
         if(len(com)>2):
-            date = datetime.now().date() - timedelta(7*int(com[2]))
+            d_ago = int(com[2])
+            print(d_ago)
+
+            if(d_ago)<0:
+                await message.channel.send("Não há registros do futuro")
+                return
+
+            date = datetime.now().date() - timedelta(7*d_ago)
         else:
             date = datetime.now().date()
 
+        
         data = messages.GetMessageEmpireWeek(date)
+        if len(data)==0:
+            await message.channel.send(f"Não há registro do ranking de {com[2]} semanas atrás")
+            return
 
         table = utils.genTableServers(data,client)
         embed = utils.genEmbed("Ranking de Servidores",table,descp="Ranking de servidores por mensagens \nenviadas essa semana")

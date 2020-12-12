@@ -13,6 +13,23 @@ def genEmbed(title:str,body:str,descp="Boar",color=990033):
     return embed
 
 
+
+
+
+def genTableRank(r_data:list,guild,client):
+    """Preparates the data to generate a Rank Table,then call the generic generator """
+    #Formats the raw data in order to send to the generic table generator
+    data = []
+    for user in r_data:
+        name = (guild.get_member(user[0])).nick
+        if name == None:
+            name = client.get_user(user[0]).name
+        messages = user[1]
+
+        data.append([name,messages])
+
+    return genTableString(data,["Membro","Mensagens"],width=30)
+
 def genTableServers(r_data:dict,client):
     """Preparates the data to generate a Server Table,then call the generic generator """
 

@@ -3,8 +3,9 @@ import discord
 from datetime import datetime
 
 from Internals import commands
-from Statistics import messages
+from Statistics import messages,rank
 from Management import server
+
 
 
 
@@ -15,6 +16,7 @@ async def on_ready():
     
     print("On")
     print(datetime.now())
+
 
 #################################Guild Join#####################################################
 @client.event
@@ -39,7 +41,12 @@ async def on_member_join(member):
 async def on_message(message):
     
     messages.CountMessage(message.guild.id)
-    
+
+    #Ignores bot commands and rank
+    if message.author.bot:
+        return
+
+    rank.countPoints(message.guild.id,message.author.id,len(message.content))
     await commands.ParseMessage(message,client)
 
 

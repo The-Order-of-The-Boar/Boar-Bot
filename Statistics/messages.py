@@ -55,9 +55,12 @@ def GetMessageEmpireWeek(date:datetime):
     #Gets the raw data with the messages from the week of the given day
     day_of_w = date.weekday()
     monday = date - timedelta(day_of_w)
+    next_monday = monday + timedelta(days=7)
 
     data = db.custom_retrieve(f""" SELECT Server,Num 
-            FROM MESSAGES WHERE Date >= '{monday}'  ORDER BY Num DESC""")
+            FROM MESSAGES WHERE Date >= '{monday}' AND Date < '{next_monday}'  
+            ORDER BY Num DESC""")
+    print(data)
     #Parses the raw data
     messages = {}
     for i in range(len(data)):

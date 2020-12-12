@@ -18,7 +18,7 @@ def RemoveServer(idd:int):
     db.delete_value("ServerConfigs","id",idd)
 
 def CreateServerTable():
-    """Creates the ServerConfigs table, not to be used regularly, but stays as a reference"""
+    """Creates the ServerConfigs table, not to be used , but stays as a reference"""
     db.create_table("ServerConfigs",[
         ["id", " BIGINT PRIMARY KEY"],
         ["listen_channels", " BIGINT[]"],
@@ -75,8 +75,6 @@ def ListenThisChannel(server_id:int,channel_id:int):
 def GetListen(server_id:int):
     return db.retrieve_value("ServerConfigs","listen_channels",["id",server_id])[0][0]
 
-
-    
 
 
 ##############################################################################################
