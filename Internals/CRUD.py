@@ -162,8 +162,8 @@ class boarPostgre():
     def update_value(self,table:str,old_value:list,new_value:list):
         """Updates specific values from a given row\n
         Usage: update_value(String:"name of the table",List["condition collum name","condition row value"],
-        List["collum to be updated","value to be inserted"])\n
-        Example: update_value("User",["name","Leonardo"],["Age","45"])\n
+        List["collum to be updated","value to be inserted","type of the value])\n
+        Example: update_value("User",["name","Leonardo"],["Age","45",int])\n
         The first argument is the table name;the second argument is a list,index 0 being  the name of the
         collum which the value will be searched, index 1 being the value that will be updated;
         the third argument is a list, index 0 being the collum where the new value will be placed,index 1 being the 
@@ -171,7 +171,10 @@ class boarPostgre():
         """
         
         #String command formatting
-        command = f"Update {table} set {new_value[0]} = '{new_value[1]}' Where {old_value[0]} = '{old_value[1]}'"
+        if new_value[2]==str:
+            new_value[1] = f"'{new_value[1]}'"
+
+        command = f"Update {table} set {new_value[0]} = {new_value[1]} Where {old_value[0]} = '{old_value[1]}'"
         
         #Connection to database and command execution via cursor
         self._cursor_execute(command)

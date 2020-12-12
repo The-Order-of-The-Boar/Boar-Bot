@@ -1,6 +1,10 @@
 import discord
+from dateutil import tz
+from datetime import datetime
 
 
+
+##########################################Generators############################################
 def genEmbed(title:str,body:str,descp="Boar",color=990033):
     """Generates a embed with the given Title and Content"""
     embed = discord.Embed(title=title,description=descp,color=color)
@@ -9,37 +13,64 @@ def genEmbed(title:str,body:str,descp="Boar",color=990033):
     return embed
 
 
+def genTableServers(r_data:dict,client):
+    """Preparates the data to generate a Server Table,then call the generic generator """
 
 
-def covertDateFormat(data:list,date_index:int):
-    """Converts the date to the one that is used in the output, it recieves the return of a 
-    query and the position that the date is on it """
-    for i in range(len(data)):
-        blocks = str(data[i][date_index]).split("-")
-        data[i][date_index] = f"{blocks[2]}/{blocks[1]}"
-    
-    return data
+    #Formats the raw data in order to send to the generic table generator
+    data = []
 
-def genTableString(data:list,row_names:list,width=20):
+    for server in r_data.items():
+        name = client.get_guild(server[0]).name
+        messages = server[1]
+
+        data.append([name,messages])
+
+    return genTableString(data,["Servidor","Mensagens"],width=40)
+
+
+def genTableString(data:list,row_names:list,width:int=20):
+    """Generates a generic string in the form of a table in order to the sent """
     
     
     table = "```md\n"
 
-    table += f"{row_names[0]} ".ljust(3+width-len(row_names[1])) + f"{row_names[1]}\n"
+    table += f"  {row_names[0]} ".ljust(width-len(row_names[1])) + f"{row_names[1]}\n"
+    
     
     line = 0
     for row in data:
+        
+        #Char that formats the row
         if(line%2)==0: 
-            table+="<><"
+            f_c =["# "," #"]
         else:
-            table+="<< "
+            f_c =["< "," >"]
         line+=1
 
-        table += f"{row[0]}:".ljust(width-len(str(row[1])),'-') + f"{row[1]}\n"
+        table += f"{f_c[0]}{row[0]}:".ljust(width-len(str(row[1])),'-') + f"{row[1]}{f_c[1]}\n"
     
     table+= "```"
 
 
     return table
+
+##########################################Conversors############################################
+
+def utcToLocal(utc:datetime):
+
+    utc = utc.replace(tzinfo=tz.tzutc())
+    local = utc.astimezone(tz.tzlocal())
+
+    return local
+
+
+##########################################Misc############################################
+
+
+
+            
+
+        
 
 

@@ -4,7 +4,7 @@ from datetime import datetime
 
 from Internals import commands
 from Statistics import messages
-import server
+from Management import server
 
 
 
@@ -28,8 +28,9 @@ async def on_guild_join(guild):
 async def on_member_join(member):
 
     welcome = server.GetWelcome(member.guild.id)
-    welcome["message"] = welcome["message"].replace("<mention>",member.mention)
-    await client.get_channel(welcome["channel"]).send(welcome["message"])
+    if (not welcome["message"] == None):
+        welcome["message"] = welcome["message"].replace("<mention>",member.mention)
+        await client.get_channel(welcome["channel"]).send(welcome["message"])
 
 
 
@@ -39,10 +40,15 @@ async def on_message(message):
     
     messages.CountMessage(message.guild.id)
     
-    await commands.ParseMessage(message)
+    await commands.ParseMessage(message,client)
+
+
+@client.event
+async def on_message_delete(message):
 
 
 
+    messages.UncountMessage(message)
 
 
 

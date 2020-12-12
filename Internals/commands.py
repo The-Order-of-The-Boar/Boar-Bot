@@ -2,20 +2,21 @@ import discord
 from datetime import datetime,timedelta
 from os import environ
 
-import server
+from Management import server
 from Statistics import messages
 from Internals import utils
 
-async def ParseMessage(message):
+prefix = {"std":"b","mod":"bm"}
+#Defines the prefix accordingly to the bot host
+if(not "DYNO" in environ):
+    prefix = {"std":"d","mod":"dm"}
+
+
+async def ParseMessage(message,client):
 
     s_id = message.guild.id
     c_id = message.channel.id
 
-    prefix = {"std":"b","mod":"bm"}
-
-    #Defines the prefix accordingly to the bot host
-    if("DYNO" in environ):
-        prefix = {"std":"d","mod":"dm"}
 
     #Returns if doesn't have the command prefix
     if(not message.content.startswith(prefix["std"])):
@@ -26,7 +27,7 @@ async def ParseMessage(message):
     if(len(com)<2):
         return
     
-    ######Management Commands
+    ###############################################Management Commands
     #Check if it's a management command and if the user has enough permissions
     if(com[0]==prefix["mod"]):
         manager = message.author.permissions_in(message.channel).manage_channels
@@ -41,6 +42,13 @@ async def ParseMessage(message):
             server.SetWelcome(s_id,c_id,mes)
             await message.channel.send(f"""A partir de agora este é o canal de recepção,com a seguinte mensagem: `{mes}`""")
         
+        elif(com[1]=="remWelcome"):
+
+
+            server.UnsetWelcome(s_id)
+            await message.channel.send("O sistema de recepção de membros foi desativado com sucesso")
+
+
         ##Listen and Ignore
         elif(com[1]=="ignoreChannel"):
             
@@ -79,7 +87,7 @@ async def ParseMessage(message):
         return
     
     #Returns if it's another word that starts with b
-    if(com[0]!="b"):
+    if(com[0]!=prefix["std"]):
         return
     
 
@@ -91,7 +99,9 @@ async def ParseMessage(message):
         await message.channel.send("Junte-se aos nossos desenvolvedores em Vai-Quem-Quer, nossa Capital: https://discord.gg/wH44qTp")
 
 
-    #######Statistics Commands
+    ###############################################Statistics Commands
+
+    ########################Messages
     elif(com[1]=="today"):
         
         mes = messages.GetMessagesByDay(s_id,datetime.now().date())
@@ -129,5 +139,20 @@ async def ParseMessage(message):
         table = utils.genTableString(data,["Data","Mensagens"])
 
         embed = utils.genEmbed("Tabela de mensagens",table,descp="Quantidade de mensagens \nenviadas por dia no servidor")
+        await message.channel.send(embed=embed,content=None)
+    
+    ########################Ranks
+
+    elif(com[1]=="serverRank"):
+
+        if(len(com)>2):
+            date = datetime.now().date() - timedelta(7*int(com[2]))
+        else:
+            date = datetime.now().date()
+
+        data = messages.GetMessageEmpireWeek(date)
+
+        table = utils.genTableServers(data,client)
+        embed = utils.genEmbed("Ranking de Servidores",table,descp="Ranking de servidores por mensagens \nenviadas essa semana")
         await message.channel.send(embed=embed,content=None)
 

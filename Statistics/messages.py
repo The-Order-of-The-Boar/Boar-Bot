@@ -3,6 +3,7 @@ import sys
 sys.path.append(".")
 
 from Internals.CRUD import db
+from Internals import utils
 from datetime import datetime,timedelta
 
 def CountMessage(server_id:int):
@@ -10,16 +11,25 @@ def CountMessage(server_id:int):
     VALUES ({server_id},'{datetime.now().date()}',1) ON CONFLICT(Date,Server) 
     DO UPDATE SET Num = Messages.Num+1""")
 
+def UncountMessage(message):
+
+    date = utils.utcToLocal(message.created_at).date()
+
+    db.update_value("Messages",["Date",date],["Num","Num-1",int])
+
+
 
 def UpdateMessages(server_id:id,day:str,value:int):
     db.insert_value("Messages",[server_id,day,value],
         additional=f"ON CONFLICT(Date,Server) DO UPDATE SET Num = {value}")
 
 
-#################################Text Comands#########################################
+#################################Text Commands#########################################
 
 
 def GetMessagesByDay(server_id:int,date):
+    """Gets the amount of messages from the given server in the give day  """
+
     messages = db.custom_retrieve(f"""SELECT Num FROM Messages 
                         WHERE Date='{date}' AND Server={server_id}""")
     
@@ -29,6 +39,7 @@ def GetMessagesByDay(server_id:int,date):
 
 
 def GetLastMessages(server_id:int,amount:int=10,start:int=0):
+    """Gets the amount of messages from the given server in the given interval """
 
     messages = db.custom_retrieve(f"""
     SELECT Date,Num FROM Messages WHERE Server={server_id} 
@@ -37,9 +48,23 @@ def GetLastMessages(server_id:int,amount:int=10,start:int=0):
 
     return messages
 
+def GetMessageEmpireWeek(date:datetime):
+    """Gets the amount of messages in all the Empire in the week of the given day"""
 
 
-from Internals import utils
-utils.genTableString(GetLastMessages(272166101025161227),["Data","Mensagens"])
+    #Gets the raw data with the messages from the week of the given day
+    day_of_w = date.weekday()
+    monday = date - timedelta(day_of_w)
 
-                    
+    data = db.custom_retrieve(f""" SELECT Server,Num 
+            FROM MESSAGES WHERE Date >= '{monday}'  ORDER BY Num DESC""")
+    #Parses the raw data
+    messages = {}
+    for i in range(len(data)):
+        if(data[i][0] in messages.keys()):
+            messages[data[i][0]] += data[i][1]
+        else:
+            messages[data[i][0]] = data[i][1]
+
+    return messages
+
