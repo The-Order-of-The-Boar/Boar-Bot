@@ -35,15 +35,19 @@ def countPoints(server_id:int, user_id:int, chars:int):
 #################################Rank Querys#########################################
 
 
-def getRankByWeek(server_id:int,ago:int = 0):
+def getRankByWeek(server_id:int,p:str,ago:int = 0):
 
     date  = datetime.now().date()
     date -= timedelta(days=date.weekday()+(ago*7))
 
+    if p == "c":
+        points = "chars"
+    elif p == "m":
+        points = "messages"
 
-    data = db.custom_retrieve(f""" SELECT user_id,messages 
+    data = db.custom_retrieve(f""" SELECT user_id,{points}
             FROM Rank WHERE date = '{date}' AND server_id = {server_id}  
-            ORDER BY messages DESC""")
+            ORDER BY {points} DESC""")
 
 
     return data

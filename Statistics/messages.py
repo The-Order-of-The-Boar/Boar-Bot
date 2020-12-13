@@ -66,6 +66,9 @@ def GetMessageEmpireWeek(date:datetime):
     for i in range(len(data)):
         if(data[i][0] in messages.keys()):
             messages[data[i][0]] += data[i][1]
+
+                
+
         else:
             messages[data[i][0]] = data[i][1]
 

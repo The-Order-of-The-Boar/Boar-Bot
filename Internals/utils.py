@@ -28,7 +28,7 @@ def genTableRank(r_data:list,guild,client):
 
         data.append([name,messages])
 
-    return genTableString(data,["Membro","Mensagens"],width=30)
+    return genTableString(data,["Membro","Pontos"],width=30)
 
 def genTableServers(r_data:dict,client):
     """Preparates the data to generate a Server Table,then call the generic generator """
@@ -37,7 +37,7 @@ def genTableServers(r_data:dict,client):
     #Formats the raw data in order to send to the generic table generator
     data = []
 
-    for server in r_data.items():
+    for server in sorted(r_data.items(), key=lambda item: item[1],reverse=True):
         name = client.get_guild(server[0]).name
         messages = server[1]
 

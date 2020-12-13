@@ -159,22 +159,28 @@ async def ParseMessage(message,client):
     ########################Ranks
     elif(com[1]=="rank"):
 
+        d_ago = 0
+        points = "mensagens"
         if(len(com)>2):
-            d_ago = int(com[2])
-            data = rank.getRankByWeek(s_id,d_ago)
             
-            if(d_ago)<0:
-                await message.channel.send("Não há registros do futuro")
-                return
-        else:
-            data = rank.getRankByWeek(s_id)
+            for i in range(2,len(com)):
+                if("-c" in com):
+                    points = "caracteres"
+                else:
+                    d_ago = int(com[i])
+            
+                    if(d_ago)<0:
+                        await message.channel.send("Não há registros do futuro")
+                        return
+        
+        data = rank.getRankByWeek(s_id,points[0],ago=d_ago)
         
         if len(data)==0:
             await message.channel.send(f"Não há registro do ranking de {com[2]} semanas atrás")
             return
 
         table = utils.genTableRank(data,message.guild,client) 
-        embed = utils.genEmbed("Ranking",table,descp="Ranking de membros por mensagens \nenviadas na semana")
+        embed = utils.genEmbed("Ranking",table,descp=f"Ranking de membros por {points} \nenviadas na semana")
         await message.channel.send(embed=embed,content=None)
 
     elif(com[1]=="serverRank"):
