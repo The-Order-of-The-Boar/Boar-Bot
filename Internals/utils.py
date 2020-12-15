@@ -20,15 +20,31 @@ def genTableRank(r_data:list,guild,client):
     """Preparates the data to generate a Rank Table,then call the generic generator """
     #Formats the raw data in order to send to the generic table generator
     data = []
+
+
+
     for user in r_data:
-        name = (guild.get_member(user[0])).nick
-        if name == None:
-            name = client.get_user(user[0]).name
-        messages = user[1]
 
-        data.append([name,messages])
+        #Gets the name in of three cases:User in guild with nick;without nick;without guild
+        try:
+            member = (guild.get_member(user[0]))
+            if member != None:
+                name = member.nick
+                if name == None:
+                    name = client.get_user(user[0]).name
+            else:
+                name = client.get_user(user[0]).name
 
-    return genTableString(data,["Membro","Pontos"],width=30)
+            if(len(name)>25):
+                name = name[:22]+"..."
+
+            messages = user[1]
+
+            data.append([name,messages])
+        except:
+            print(f"Error with user {user[0]}")
+
+    return genTableString(data,["Membro","Pontos"],width=35)
 
 def genTableServers(r_data:dict,client):
     """Preparates the data to generate a Server Table,then call the generic generator """
