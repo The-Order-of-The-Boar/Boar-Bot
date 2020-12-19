@@ -47,7 +47,7 @@ async def on_message(message):
         return
 
     rank.countPoints(message.guild.id,message.author.id,len(message.content))
-    await commands.ParseMessage(message,client)
+    await commands.ParseCommand(message,client)
 
 
 @client.event

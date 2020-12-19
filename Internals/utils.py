@@ -35,8 +35,8 @@ def genTableRank(r_data:list,guild,client):
             else:
                 name = client.get_user(user[0]).name
 
-            if(len(name)>25):
-                name = name[:22]+"..."
+            if(len(name)>24):
+                name = name[:23]+"."
 
             messages = user[1]
 

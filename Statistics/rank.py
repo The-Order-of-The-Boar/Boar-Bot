@@ -47,7 +47,7 @@ def getRankByWeek(server_id:int,p:str,ago:int = 0):
 
     data = db.custom_retrieve(f""" SELECT user_id,{points}
             FROM Rank WHERE date = '{date}' AND server_id = {server_id}  
-            ORDER BY {points} DESC""")
+            ORDER BY {points} DESC LIMIT 20""")
 
 
     return data
