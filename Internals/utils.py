@@ -1,6 +1,7 @@
 import discord
 from dateutil import tz
 from datetime import datetime
+import sys
 
 
 
@@ -13,7 +14,18 @@ def genEmbed(title:str,body:str,descp="Boar",color=990033):
     return embed
 
 
+def replaceImmoralChars(word:str):
 
+    forbidden_chars = ["#","`","<"]
+    
+    for forb in forbidden_chars:
+        word = word.replace(forb,"")
+
+    
+    output = word.encode("ascii","ignore").decode()
+
+
+    return output
 
 
 def genTableRank(r_data:list,guild,client):
@@ -40,8 +52,11 @@ def genTableRank(r_data:list,guild,client):
 
             messages = user[1]
 
+            name = replaceImmoralChars(name)
             data.append([name,messages])
         except:
+            exp = sys.exc_info()
+            print(exp)
             print(f"Error with user {user[0]}")
 
     return genTableString(data,["Membro","Pontos"],width=35)

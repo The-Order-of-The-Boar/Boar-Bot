@@ -9,6 +9,7 @@ from Management import server
 
 
 
+
 client = discord.Client(intents=discord.Intents.all())
 #################################Start#####################################################
 @client.event
@@ -46,7 +47,8 @@ async def on_message(message):
     if message.author.bot:
         return
 
-    rank.countPoints(message.guild.id,message.author.id,len(message.content))
+    if(message.channel.id != 770107741585932339):
+        rank.countPoints(message.guild.id,message.author.id,len(message.content))
     await commands.ParseCommand(message,client)
 
 
