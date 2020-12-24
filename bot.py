@@ -30,10 +30,22 @@ async def on_guild_join(guild):
 @client.event
 async def on_member_join(member):
 
-    welcome = server.GetWelcome(member.guild.id)
+    server_id = member.guild.id
+
+    #Welcome message if exists
+    welcome = server.GetWelcome(server_id)
     if (not welcome["message"] == None):
         welcome["message"] = welcome["message"].replace("<mention>",member.mention)
         await client.get_channel(welcome["channel"]).send(welcome["message"])
+    
+
+    #Autorole  if exists
+    role_id = server.getAutorole(server_id)
+    if (not role_id == None):
+        guild = client.get_guild(server_id)
+        role = guild.get_role(role_id)
+        await member.add_roles(role)
+
 
 
 

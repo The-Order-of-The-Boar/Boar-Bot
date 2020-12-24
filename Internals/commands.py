@@ -106,6 +106,26 @@ async def ParseCommand(message,client):
             server.UnsetWelcome(s_id)
             await message.channel.send("O sistema de recepção de membros foi desativado com sucesso")
 
+        ##Autorole
+        elif(command=="setAutorole"):
+            
+            role_id = int(args["r"])
+            role = client.get_guild(s_id).get_role(role_id)
+
+            if(role == None):
+                await message.channel.send("ID inválido")
+                return
+
+            role_id = int(args["r"])
+            server.setAutorole(s_id,role_id)
+            await message.channel.send(f"A partir de agora todos os novos membros receberão o cargo {role.name}")
+
+        elif(command=="unsetAutorole"):
+
+            server.unsetAutorole(s_id)
+            await message.channel.send("O sistema de autorole foi desativado com sucesso")
+        
+
 
         ##Listen and Ignore
         elif(command=="ignoreChannel"):

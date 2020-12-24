@@ -23,17 +23,18 @@ def CreateServerTable():
         ["id", " BIGINT PRIMARY KEY"],
         ["listen_channels", " BIGINT[]"],
         ["welcome_channel", " BIGINT"],
+        ["role", "BIGINT"],
         ["welcome_message", " VARCHAR(200)"]
         ])
 
 #################################Welcome#########################################
 
 
-def SetWelcome(server_id:int,channel_id:int,message:str="Seja Bem-vindo"):
+def SetWelcome(server_id:int,channel_id:int,message:str):
 
     db.custom_insert(f"""UPDATE ServerConfigs SET
     welcome_channel={channel_id},
-    welcome_message='{message}'
+    welcome_message='{message}',
     WHERE id = {server_id}
      """)
     
@@ -41,7 +42,7 @@ def UnsetWelcome(server_id:int):
 
     db.custom_insert(f"""UPDATE ServerConfigs SET
     welcome_channel= NULL ,
-    welcome_message= NULL
+    welcome_message= NULL,
     WHERE id = {server_id}
      """)
     pass
@@ -53,6 +54,30 @@ def GetWelcome(server_id:int):
     welcome["channel"],welcome["message"] = db.retrieve_value("ServerConfigs","welcome_channel,welcome_message",["id",server_id])[0]
 
     return welcome
+
+
+#################################Autorole#########################################
+
+def setAutorole(server_id:int,role:int):
+    
+    db.custom_insert(f"""UPDATE ServerConfigs SET
+            role ={role}
+            WHERE id = {server_id}
+            """)
+
+def unsetAutorole(server_id:int):
+    db.custom_insert(f"""UPDATE ServerConfigs SET
+            role = Null
+            WHERE id = {server_id}
+            """)
+
+
+def getAutorole(server_id:int):
+
+    role = db.retrieve_value("ServerConfigs","role",["id",server_id])
+    return role[0][0]
+
+
 
 #################################Listen Channels#########################################
 
