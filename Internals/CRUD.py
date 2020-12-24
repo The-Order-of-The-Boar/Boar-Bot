@@ -34,6 +34,7 @@ class boarPostgre():
         except Exception as  error:
             print(error)
             return None
+        
 
     def _cursor_execute(self,com,request=False):
         """Connects to the databse and execute the string 'com'"""
@@ -156,6 +157,16 @@ class boarPostgre():
         query = self._cursor_execute(command,request=True)
         return query
 
+    def copy_to(self,path:str,table:str):
+
+        file = open(path,"w")
+        query = f"COPY {table} TO STDOUT WITH CSV HEADER DELIMITER '|' "
+        
+        
+        db = self._get_connection()
+        db.cursor().copy_expert(query,file)
+
+
 ########################crUd - 'UPDATE' FUNCTIONS#################################################
 
 
@@ -195,6 +206,7 @@ class boarPostgre():
 
         #Connection to database and command execution via cursor
         self._cursor_execute(command)
+
 
 ########################CRUD Object########################################################################
 

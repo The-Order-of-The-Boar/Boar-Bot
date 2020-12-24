@@ -159,7 +159,8 @@ async def ParseCommand(message,client):
             messages.UpdateMessages(s_id,date,args["a"])
             await message.channel.send(f"O número de mensagens do dia {args['d']} foi atualizado com sucesso para {args['a']}")
 
-            
+
+
             
 
 
@@ -288,7 +289,18 @@ async def ParseCommand(message,client):
         a = test.disc_test().decode()
 
         await message.channel.send(a)
-    
+
+    elif(command=="backup"):
+
+        table = args["t"].split('"')[1]
+        
+        backup = server.backup(table)
+
+        if(backup==None):
+            await message.channel.send("Tabela inexistente")
+        else:
+            await message.channel.send(f"Backup da tabela {table}",file=discord.File(backup))
+
 
 
     if("m" in args.keys()):

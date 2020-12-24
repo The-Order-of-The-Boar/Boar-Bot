@@ -1,5 +1,6 @@
 #################################Server Management#####################################################
 from Internals.CRUD import db
+from os import getcwd,path
 
 
 #################################Server Setup#########################################
@@ -100,6 +101,28 @@ def ListenThisChannel(server_id:int,channel_id:int):
 def GetListen(server_id:int):
     return db.retrieve_value("ServerConfigs","listen_channels",["id",server_id])[0][0]
 
+#################################Backup#########################################
+
+def backup(table:str):
+    """Returns a CSV file with the backup of the given table """
+
+    tables = db.custom_retrieve("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
+    
+    valid_table = False
+    for t in tables:
+        print(t[0])
+        print(table)
+        if(table==t[0]):
+            valid_table = True
+            continue
+    
+    if(not valid_table):
+        return None
+    
+    o_path = path.join(getcwd(),f"{table}.csv")
+
+    db.copy_to(o_path,table)
+    return o_path
 
 
 ##############################################################################################
