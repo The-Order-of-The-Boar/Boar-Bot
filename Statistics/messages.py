@@ -6,6 +6,18 @@ from Internals.CRUD import db
 from Internals import utils
 from datetime import datetime,timedelta
 
+
+def CreateMessagesTable():
+    """Creates the Messages table, not to be used , but stays as a reference"""
+    db.create_table("Messages",[
+        ["server", " BIGINT "],
+        ["date","DATE"],
+        ["num", " SMALLINT"],
+        ["PRIMARY KEY(server, date)", ""],
+        ["FOREIGN KEY(server) REFERENCES ServerConfigs(id)"," ON DELETE CASCADE"],
+        ])
+
+
 def CountMessage(server_id:int):
     db.custom_insert(f"""INSERT INTO Messages 
     VALUES ({server_id},'{datetime.now().date()}',1) ON CONFLICT(Date,Server) 
