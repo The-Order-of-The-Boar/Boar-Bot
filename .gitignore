@@ -1,7 +1,7 @@
 *__pycache__/
 *vscode/
-token.txt
-*reds.txt
+*oken.txt
+*reds.json
 *.csv
 
 
