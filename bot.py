@@ -88,6 +88,6 @@ token = ""
 if("DYNO" in environ):
     token = environ['TOKEN']
 else:
-    token = open("debugToken.txt", 'r',encoding="utf-8").read()
+    token = open("localToken.txt", 'r',encoding="utf-8").read()
 
 client.run(token)

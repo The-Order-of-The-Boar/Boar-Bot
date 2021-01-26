@@ -211,15 +211,17 @@ class boarPostgre():
 ########################CRUD Object########################################################################
 
 from os import environ
+from json import loads
 import urllib.parse as urlparse
+
 
 db = None
 if("DYNO" in environ):
     url = urlparse.urlparse(environ['DATABASE_URL'])
     db = boarPostgre(url.hostname,url.path[1:],url.username,url.password,url.port)
 else:
-    creds = open("localCreds.txt", 'r',encoding="utf-8").read().splitlines()
-    db = boarPostgre(creds[0],creds[1],creds[2],creds[3],int(creds[4]))
+    creds = loads(open("localCreds.json", 'r',encoding="utf-8").read())
+    db = boarPostgre(creds["host"],creds["database"],creds["user"],creds["password"],int(creds["port"]))
 
 
 ####################################################################################################################
