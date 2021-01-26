@@ -1,12 +1,17 @@
 *__pycache__/
 *vscode/
-token.txt
-*.csv
-
-
 boarbot/
 
 
+*oken.txt
+
+
+
+
+*.json
+*.csv
 *.o
 *.so
+
+
 *test*
