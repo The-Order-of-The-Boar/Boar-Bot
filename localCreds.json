@@ -2,7 +2,7 @@
     "host" : "localhost",
     "database": "postgres",
     "user": "postgres",
-    "password" : "hentai666",
+    "password" : "",
     "port" : 5432
 
 }
