@@ -8,7 +8,7 @@
  <br>2 - Install PostgreSQL on your machine.
  <br>3 - Fill "localCreds.json" with the credentials of your database
  <br>4 - Run "setup.py" in order to create the tables
- <br>5 - Create a app in the Discord Developer Portal and paste it's token into "localCreds.txt"
+ <br>5 - Create a app in the Discord Developer Portal and paste it's token into "localToken.txt"
  <br>6 - Run "bot.py", then the bot will be up and running if everything is fine
  <br>7 - Add the bot to a server and test it's commands
  <br>
