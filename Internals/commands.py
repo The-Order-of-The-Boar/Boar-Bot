@@ -1,4 +1,5 @@
 import discord
+from pandas import read_csv
 from datetime import datetime,timedelta
 from time import time
 from os import environ
@@ -14,8 +15,6 @@ if(not "DYNO" in environ):
 
 
             
-            
-
 
 
 async def ParseCommand(message,client):
@@ -301,7 +300,21 @@ async def ParseCommand(message,client):
         else:
             await message.channel.send(f"Backup da tabela {table}",file=discord.File(backup))
 
+    elif(command == "poll"):
+        
 
+        data = read_csv("https://docs.google.com/spreadsheets/d/1pxTlccoEMYW0joiVESg0c8pinln9SpDjG8A9E1agtzY/gviz/tq?tqx=out:csv&sheet=Boar").to_dict()
+
+        voters = []
+
+        for name in data["Qual o seu Nick no Servidor?"].values():
+            voters.append([name,""])
+
+
+        table = utils.genTableString(voters,["Usuário",""])
+        embed = utils.genEmbed("Votantes na Boar Poll #01",table,"Lista de camaradas  que já \n votaram na eleição")
+
+        await message.channel.send(embed=embed,content=None)
 
     if("m" in args.keys()):
         end_t = round((time() - start_t)*1000,6)

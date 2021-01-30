@@ -3,8 +3,8 @@
 boarbot/
 
 *token.txt
-*Token.txt
-*Creds.json
+*localToken.txt
+*localCreds.json
 
 
 
