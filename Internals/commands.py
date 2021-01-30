@@ -1,5 +1,5 @@
 import discord
-from pandas import read_csv
+from requests import get
 from datetime import datetime,timedelta
 from time import time
 from os import environ
@@ -303,12 +303,13 @@ async def ParseCommand(message,client):
     elif(command == "poll"):
         
 
-        data = read_csv("https://docs.google.com/spreadsheets/d/1pxTlccoEMYW0joiVESg0c8pinln9SpDjG8A9E1agtzY/gviz/tq?tqx=out:csv&sheet=Boar").to_dict()
+        data = get("https://docs.google.com/spreadsheets/d/1pxTlccoEMYW0joiVESg0c8pinln9SpDjG8A9E1agtzY/gviz/tq?tqx=out:csv&sheet=Boar", allow_redirects=True).content
 
+        lines = data.decode().split("\n")
+        
         voters = []
-
-        for name in data["Qual o seu Nick no Servidor?"].values():
-            voters.append([name,""])
+        for i in range(1,len(lines)):
+            voters.append([lines[i].split(",")[1].replace('"',''),""])
 
 
         table = utils.genTableString(voters,["Usuário",""])
