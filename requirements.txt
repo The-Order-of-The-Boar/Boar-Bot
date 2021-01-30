@@ -1,3 +1,4 @@
 ﻿discord.py
 psycopg2
 python-dateutil
+requests
