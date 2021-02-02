@@ -4,9 +4,9 @@ from datetime import datetime,timedelta
 from time import time
 from os import environ
 
-from Management import server
-from Statistics import messages,rank
-from Internals import utils
+from commands import server
+from commands import messages,rank
+from core import utils
 
 prefix = {"std":"b","mod":"bm"}
 #Defines the prefix accordingly to the bot host
@@ -193,11 +193,13 @@ async def ParseCommand(message,client):
         await message.channel.send(f"Ontem foram enviadas {mes} mensagens neste servidor")
 
     elif(command=="back"):
+        
         back = 1
         try:
             back = int(r_command[2])
         except IndexError:
             pass
+
         if(back<0):
             await message.channel.send("Não há registros do futuro")
             return
@@ -213,8 +215,11 @@ async def ParseCommand(message,client):
 
         ##Checks if the user specifies a page
         page = 0
-        if("b" in args.keys()):
-            page = int(args["b"])
+
+        try:
+            page = int(r_command[2])
+        except IndexError:
+            pass
 
             if(page)<0:
                 await("Não há registros do futuro")
@@ -231,6 +236,19 @@ async def ParseCommand(message,client):
         embed = utils.genEmbed("Tabela de mensagens",table,descp="Quantidade de mensagens \nenviadas por dia no servidor")
         await message.channel.send(embed=embed,content=None)
     
+    elif(command=="record"):
+        await message.channel.send(embed=messages.GetRecord(s_id),content=None)
+
+    elif(command=="average"):
+        d_ago = 7
+
+        try:
+            d_ago = int(r_command[2])
+        except :
+            pass
+
+        await message.channel.send(messages.GetAverage(s_id,d_ago))
+
     ########################Ranks
     elif(command=="rank"):
 
@@ -255,22 +273,23 @@ async def ParseCommand(message,client):
 
         table = utils.genTableRank(data,message.guild,client) 
         embed = utils.genEmbed("Ranking",table,descp=f"Ranking de membros por {points} \nenviadas na semana")
-        if("n" in args.keys()):
-            end_t = round((time() - start_t)*1000,6)
-            await message.channel.send(f"`O comando foi executado em {end_t}ms`")
         await message.channel.send(embed=embed,content=None)
 
     elif(command=="serverRank"):
 
-        if("b" in args.keys()):
-            d_ago = int(args["b"])
-            if(d_ago)<0:
-                await message.channel.send("Não há registros do futuro")
-                return
+        w_ago = 0
 
-            date = datetime.now().date() - timedelta(7*d_ago)
+        try:
+            w_ago = int(r_command[2])
+        except IndexError:
+            pass
+
+        if(w_ago)<0:
+            await message.channel.send("Não há registros do futuro")
+            return
+
         else:
-            date = datetime.now().date()
+            date = datetime.now().date() - timedelta(7*w_ago)
 
         
         data = messages.GetMessageEmpireWeek(date)
@@ -303,22 +322,6 @@ async def ParseCommand(message,client):
         else:
             await message.channel.send(f"Backup da tabela {table}",file=discord.File(backup))
 
-    elif(command == "poll"):
-        
-
-        data = get("https://docs.google.com/spreadsheets/d/1pxTlccoEMYW0joiVESg0c8pinln9SpDjG8A9E1agtzY/gviz/tq?tqx=out:csv&sheet=Boar", allow_redirects=True).content
-
-        lines = data.decode().split("\n")
-        
-        voters = []
-        for i in range(1,len(lines)):
-            voters.append([lines[i].split(",")[1].replace('"',''),""])
-
-
-        table = utils.genTableString(voters,["Usuário",""])
-        embed = utils.genEmbed("Votantes na Boar Poll #01",table,"Lista de camaradas  que já \n votaram na eleição")
-
-        await message.channel.send(embed=embed,content=None)
 
     if("m" in args.keys()):
         end_t = round((time() - start_t)*1000,6)

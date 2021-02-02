@@ -2,8 +2,8 @@
 import sys
 sys.path.append(".")
 
-from Internals.CRUD import db
-from Internals import utils
+from core.CRUD import db
+from core import utils
 from datetime import datetime,timedelta
 
 
@@ -86,3 +86,21 @@ def GetMessageEmpireWeek(date:datetime):
 
     return messages
 
+def GetRecord(server_id:int):
+    """Gets the days with the biggest amount of messages"""
+    
+    data = db.custom_retrieve(f"SELECT date,num FROM Messages WHERE server = {server_id} ORDER BY num DESC LIMIT 20 ")
+
+    table = utils.genTableString(data,["Data","Mensagens"])
+    embed = utils.genEmbed("Tabela de Recordes",table,descp="Dias com os maiores recordes \nde mensagens enviadas ")
+
+    return embed
+
+def GetAverage(server_id:int,ago:int=7):
+    """Gets the daily messages average from the given amount of days ago"""
+
+    avg = db.custom_retrieve(f"""
+    SELECT AVG(num)::numeric(100,2) FROM 
+    (SELECT num FROM Messages WHERE server = {server_id} ORDER BY date DESC LIMIT {ago} ) as mes_num""")[0][0]
+
+    return f"A média de mensagens dos últimos {ago} dias é de {avg}"

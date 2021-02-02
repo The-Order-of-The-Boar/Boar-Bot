@@ -1,6 +1,7 @@
 import discord
 from dateutil import tz
 from datetime import datetime
+from json import loads
 import sys
 
 
@@ -13,19 +14,21 @@ def genEmbed(title:str,body:str,descp="Boar",color=990033):
     
     return embed
 
+immoral_chars = loads(open("immoral_chars.json", 'r',encoding="utf-8").read())
 
 def replaceImmoralChars(word:str):
 
     forbidden_chars = ["#","`","<"]
     
-    for forb in forbidden_chars:
-        word = word.replace(forb,"")
+    for char in forbidden_chars:
+        word = word.replace(char,"")
 
-    
-    output = word.encode("ascii","ignore").decode()
+    for char in immoral_chars.keys():
+        word = word.replace(char,immoral_chars[char])
 
 
-    return output
+
+    return word
 
 
 def genTableRank(r_data:list,guild,client):
@@ -35,7 +38,7 @@ def genTableRank(r_data:list,guild,client):
 
 
 
-    for user in r_data:
+    for i,user in enumerate(r_data):
 
         #Gets the name in of three cases:User in guild with nick;without nick;without guild
         try:
@@ -47,13 +50,13 @@ def genTableRank(r_data:list,guild,client):
             else:
                 name = client.get_user(user[0]).name
 
-            if(len(name)>24):
-                name = name[:23]+"."
+            if(len(name)>22):
+                name = name[:21]+"."
 
             messages = user[1]
 
             name = replaceImmoralChars(name)
-            data.append([name,messages])
+            data.append([f"{i+1}-{name}",messages])
         except:
             exp = sys.exc_info()
             print(exp)

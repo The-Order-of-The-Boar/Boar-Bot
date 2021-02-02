@@ -1,6 +1,6 @@
 
-from Internals.CRUD import db
-from Internals import utils
+from core.CRUD import db
+from core import utils
 from datetime import datetime,timedelta
 
 #################################Rank Mangement#########################################

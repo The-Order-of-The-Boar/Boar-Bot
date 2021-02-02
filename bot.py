@@ -2,9 +2,8 @@
 import discord
 from datetime import datetime
 
-from Internals import commands
-from Statistics import messages,rank
-from Management import server
+from core import commands
+from commands import messages,rank,server
 
 
 

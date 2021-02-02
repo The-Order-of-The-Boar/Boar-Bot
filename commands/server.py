@@ -1,5 +1,5 @@
 #################################Server Management#####################################################
-from Internals.CRUD import db
+from core.CRUD import db
 from os import getcwd,path
 
 
@@ -35,7 +35,7 @@ def SetWelcome(server_id:int,channel_id:int,message:str):
 
     db.custom_insert(f"""UPDATE ServerConfigs SET
     welcome_channel={channel_id},
-    welcome_message='{message}',
+    welcome_message='{message}'
     WHERE id = {server_id}
      """)
     
