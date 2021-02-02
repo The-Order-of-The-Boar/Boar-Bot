@@ -193,8 +193,11 @@ async def ParseCommand(message,client):
         await message.channel.send(f"Ontem foram enviadas {mes} mensagens neste servidor")
 
     elif(command=="back"):
-        
-        back = int(args["b"])
+        back = 1
+        try:
+            back = int(r_command[2])
+        except IndexError:
+            pass
         if(back<0):
             await message.channel.send("Não há registros do futuro")
             return
