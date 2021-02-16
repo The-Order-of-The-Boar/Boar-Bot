@@ -31,38 +31,7 @@ def replaceImmoralChars(word:str):
     return word
 
 
-def genTableRank(r_data:list,guild,client):
-    """Preparates the data to generate a Rank Table,then call the generic generator """
-    #Formats the raw data in order to send to the generic table generator
-    data = []
 
-
-
-    for i,user in enumerate(r_data):
-
-        #Gets the name in of three cases:User in guild with nick;without nick;without guild
-        try:
-            member = (guild.get_member(user[0]))
-            if member != None:
-                name = member.nick
-                if name == None:
-                    name = client.get_user(user[0]).name
-            else:
-                name = client.get_user(user[0]).name
-
-            if(len(name)>22):
-                name = name[:21]+"."
-
-            messages = user[1]
-
-            name = replaceImmoralChars(name)
-            data.append([f"{i+1}-{name}",messages])
-        except:
-            exp = sys.exc_info()
-            print(exp)
-            print(f"Error with user {user[0]}")
-
-    return genTableString(data,["Membro","Pontos"],width=35)
 
 def genTableServers(r_data:dict,client):
     """Preparates the data to generate a Server Table,then call the generic generator """
@@ -102,7 +71,6 @@ def genTableString(data:list,row_names:list,width:int=20):
         table += f"{f_c[0]}{row[0]}:".ljust(width-len(str(row[1])),'-') + f"{row[1]}{f_c[1]}\n"
     
     table+= "```"
-
 
     return table
 

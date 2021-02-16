@@ -2,14 +2,15 @@
 import discord
 from datetime import datetime
 
-from core import commands
-from commands import messages,rank,server
-
 
 
 
 
 client = discord.Client(intents=discord.Intents.all())
+from commands import messages
+from commands import rank
+from commands import server
+from core import comms
 #################################Start#####################################################
 @client.event
 async def on_ready():
@@ -52,15 +53,16 @@ async def on_member_join(member):
 @client.event
 async def on_message(message):
     
-    messages.CountMessage(message.guild.id)
+    messages.hentai(message.guild.id)
 
     #Ignores bot commands and rank
     if message.author.bot:
         return
 
     if(message.channel.id != 770107741585932339):
-        rank.countPoints(message.guild.id,message.author.id,len(message.content))
-    await commands.ParseCommand(message,client)
+        char_amount = len(message.content) - message.content.count(" ")
+        rank.countPoints(message.guild.id,message.author.id,char_amount)
+    await comms.ParseCommand(message,client)
 
 
 @client.event

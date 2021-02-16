@@ -1,9 +1,11 @@
-#################################Server Management#####################################################
+##############################################################################################
 from core.CRUD import db
+from core import comms
 from os import getcwd,path
+from discord import File
 
 
-#################################Server Setup#########################################
+#################################General#########################################
 
 def AddServer(idd:int,channels:list):
     """Adds a new entry to the ServerConfigs table, with the id from server and it's channels"""
@@ -28,25 +30,42 @@ def CreateServerTable():
         ["welcome_message", " VARCHAR(200)"]
         ])
 
+def getAutorole(server_id:int):
+
+    role = db.retrieve_value("ServerConfigs","role",["id",server_id])
+    return role[0][0]
+
 #################################Welcome#########################################
 
 
-def SetWelcome(server_id:int,channel_id:int,message:str):
+async def SetWelcome(message):
+
+    args = comms.ParseArguments(message.content)
+
+    text = args["t"].split('"')[1]
+    text = text.replace("¬","-")
 
     db.custom_insert(f"""UPDATE ServerConfigs SET
-    welcome_channel={channel_id},
-    welcome_message='{message}'
-    WHERE id = {server_id}
+    welcome_channel={message.channel.id},
+    welcome_message='{text}'
+    WHERE id = {message.guild.id}
      """)
+
+    await message.channel.send(f"""A partir de agora este é o canal de recepção,com a seguinte mensagem: `{text}`""")
+
+
+
     
-def UnsetWelcome(server_id:int):
+async def UnsetWelcome(message):
+
 
     db.custom_insert(f"""UPDATE ServerConfigs SET
     welcome_channel= NULL ,
-    welcome_message= NULL,
-    WHERE id = {server_id}
+    welcome_message= NULL
+    WHERE id = {message.guild.id}
      """)
-    pass
+
+    await message.channel.send("O sistema de recepção de membros foi desativado com sucesso")
     
 
 def GetWelcome(server_id:int):
@@ -59,43 +78,60 @@ def GetWelcome(server_id:int):
 
 #################################Autorole#########################################
 
-def setAutorole(server_id:int,role:int):
+async def SetAutorole(message):
+
+    args = comms.ParseArguments(message.content)
+
+    role_id = int(args["r"])
+    role = message.guild.get_role(role_id)
+
+    if(role == None):
+        await message.channel.send("ID inválido")
+        return
+
+    role_id = int(args["r"])
+
     
     db.custom_insert(f"""UPDATE ServerConfigs SET
-            role ={role}
-            WHERE id = {server_id}
+            role = {role_id}
+            WHERE id = {message.guild.id}
             """)
+    
+    await message.channel.send(f"A partir de agora todos os novos membros receberão o cargo {role.name}")
 
-def unsetAutorole(server_id:int):
+async def UnsetAutorole(message):
     db.custom_insert(f"""UPDATE ServerConfigs SET
             role = Null
-            WHERE id = {server_id}
+            WHERE id = {message.guild.id}
             """)
 
+    await message.channel.send("O sistema de autorole foi desativado com sucesso")
 
-def getAutorole(server_id:int):
 
-    role = db.retrieve_value("ServerConfigs","role",["id",server_id])
-    return role[0][0]
 
 
 
 #################################Listen Channels#########################################
 
-def IgnoreChannel(server_id:int,channel_id:int):
+async def IgnoreChannel(message):
     db.custom_insert(f"""UPDATE ServerConfigs SET 
-    listen_channels = array_remove(listen_channels,'{channel_id}')
-    WHERE id={server_id}""")
+    listen_channels = array_remove(listen_channels,'{message.channel.id}')
+    WHERE id={message.guild.id}""")
 
-def ListenChannel(server_id:int,channel_id:int):
-    db.custom_insert(f"""UPDATE ServerConfigs SET 
-    listen_channels = array_cat(listen_channels,'{{ {channel_id} }}')
-    WHERE id={server_id}""")
+    await message.channel.send("A partir de agora ignorarei comandos neste canal")
 
-def ListenThisChannel(server_id:int,channel_id:int):
+async def ListenChannel(message):
     db.custom_insert(f"""UPDATE ServerConfigs SET 
-    listen_channels = '{{"{channel_id}"}}' WHERE id={server_id}""")
-    pass
+    listen_channels = array_cat(listen_channels,'{{ {message.channel.id} }}')
+    WHERE id={message.guild.id}""")
+
+    await message.channel.send("A partir de agora receberei comandos neste canal")
+
+async def ListenThisChannel(message):
+    db.custom_insert(f"""UPDATE ServerConfigs SET 
+    listen_channels = '{{"{message.channel.id}"}}' WHERE id={message.guild.id}""")
+
+    await message.channel.send("A partir de agora receberei comandos exclusivamente neste canal")
 
 
 def GetListen(server_id:int):
@@ -103,7 +139,7 @@ def GetListen(server_id:int):
 
 #################################Backup#########################################
 
-def backup(table:str):
+def GetBackup(table:str):
     """Returns a CSV file with the backup of the given table """
 
     tables = db.custom_retrieve("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
@@ -123,6 +159,18 @@ def backup(table:str):
 
     db.copy_to(o_path,table)
     return o_path
+
+async def Backup(message):
+
+    args = comms.ParseArguments(message.content)
+
+    table = args["t"].split('"')[1]
+    backup = GetBackup(table)
+
+    if(backup==None):
+        await message.channel.send("Tabela inexistente")
+    else:
+        await message.channel.send(f"Backup da tabela {table}",file=File(backup))
 
 
 ##############################################################################################
