@@ -6,7 +6,8 @@ boarbot/
 *localToken.txt
 *localCreds.json
 
-
+tmp.png
+saida.png
 
 *.json
 *.csv

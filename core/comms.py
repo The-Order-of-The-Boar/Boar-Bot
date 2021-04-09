@@ -178,6 +178,10 @@ async def ParseCommand(message,client):
     elif(command=="serverRank"):
 
         await messages.GetMessageEmpireWeek(message,client)
+    
+    elif(command=="remove"):
+
+        await misc.BackgroundRemover(message)
 
 
 
