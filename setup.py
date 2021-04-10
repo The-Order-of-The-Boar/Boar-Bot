@@ -1,8 +1,7 @@
-from Management import server
-from Statistics import rank,messages
-from Internals.CRUD import db
+from commands import server
+from commands import rank,messages
+from core.CRUD import db
 from psycopg2.errors import DuplicateTable
-
 
 try:
     server.CreateServerTable()
@@ -24,4 +23,17 @@ except DuplicateTable:
 
 f = open("localToken.txt", "w")
 f.write("Remove this and paste your bot token here")
+f.close()
+f = open("immoral_chars.json", "w")
+f.write("""{
+    "𝓘" : "I",
+    "𝓪" : "a",
+    "𝓶": "m",
+    "𝓼" : "s",
+    "𝓾" : "u",
+    "𝓻" : "r",
+    "𝓿" : "v",
+    "𝓲" : "i",
+    "𝓸" : "o"
+}""")
 f.close()
