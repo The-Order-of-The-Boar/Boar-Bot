@@ -31,18 +31,22 @@ async def BackgroundRemover(message):
         cor_esperada = (255, 255, 255, 255)
         cor_alvo = (255, 255, 255, 0)
 
-        if len(r_command) > 4:
-            print(r_command)
-            cor_esperada = (int(r_command[2]), int(r_command[3]), int(r_command[4]), 255)
-            cor_alvo = (int(r_command[2]), int(r_command[3]), int(r_command[4]), 0)
-        print(cor_esperada)
-        print(cor_alvo)
-        #cor_alvo = (255, 255, 255, 255)
-
         await attachment.save("images/tmp.png")
         img = Image.open("images/tmp.png").convert("RGBA")
         
         pixels = img.load()
+
+        if len(r_command) > 4:
+            print(r_command)
+            cor_esperada = (int(r_command[2]), int(r_command[3]), int(r_command[4]), 255)
+        else:
+            cor_esperada = img.getpixel((0,0))
+
+        cor_alvo = (0,0,0,0)
+        print(cor_esperada)
+        print(cor_alvo)
+        #cor_alvo = (255, 255, 255, 255)
+
         imgX, imgY = img.size
         imgX, imgY = imgX-1, imgY-1
 
