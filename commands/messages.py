@@ -19,7 +19,7 @@ def CreateMessagesTable():
         ])
 
 
-def hentai(server_id:int):
+def CountMessage(server_id:int):
     db.custom_insert(f"""INSERT INTO Messages 
     VALUES ({server_id},'{datetime.now().date()}',1) ON CONFLICT(Date,Server) 
     DO UPDATE SET Num = Messages.Num+1""")

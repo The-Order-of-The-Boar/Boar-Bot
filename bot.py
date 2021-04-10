@@ -10,6 +10,7 @@ client = discord.Client(intents=discord.Intents.all())
 from commands import messages
 from commands import rank
 from commands import server
+from commands import misc
 from core import comms
 #################################Start#####################################################
 @client.event
@@ -35,8 +36,15 @@ async def on_member_join(member):
     #Welcome message if exists
     welcome = server.GetWelcome(server_id)
     if (not welcome["message"] == None):
+        
+        #Welcome image in the capital
+        image = None
+        if(member.guild.id == 272166101025161227):
+            misc.WelcomeImage(member.nick,member.avatar_url,member.guild.id)
+            image=discord.File(f"images/{member.nick}.png")
+    
         welcome["message"] = welcome["message"].replace("<mention>",member.mention)
-        await client.get_channel(welcome["channel"]).send(welcome["message"])
+        await client.get_channel(welcome["channel"]).send(welcome["message"],file=image)
     
 
     #Autorole  if exists
@@ -53,7 +61,7 @@ async def on_member_join(member):
 @client.event
 async def on_message(message):
     
-    messages.hentai(message.guild.id)
+    messages.CountMessage(message.guild.id)
 
     #Ignores bot commands and rank
     if message.author.bot:

@@ -1,4 +1,5 @@
 from PIL import Image
+from requests import get
 import discord
 
 async def Boar(message):
@@ -38,8 +39,8 @@ async def BackgroundRemover(message):
         print(cor_alvo)
         #cor_alvo = (255, 255, 255, 255)
 
-        await attachment.save("tmp.png")
-        img = Image.open("tmp.png").convert("RGBA")
+        await attachment.save("images/tmp.png")
+        img = Image.open("images/tmp.png").convert("RGBA")
         
         pixels = img.load()
         imgX, imgY = img.size
@@ -71,7 +72,7 @@ async def BackgroundRemover(message):
                 checar.pop(0)
                 continue
 
-            for A in pegar_lados(px, imgX, imgY):
+            for A in GetSides(px, imgX, imgY):
 
                 if pixels[A[0], A[1]] == cor_esperada:
                     checar.add((A[0], A[1]))
@@ -79,31 +80,42 @@ async def BackgroundRemover(message):
 
             pixels[px[0], px[1]] = cor_alvo
 
-        img.save("saida.png")
+        img.save("images/saida.png")
 
-        with open("saida.png", "rb") as fh:
-            f = discord.File(fh, filename="saida.png")
+        with open("images/saida.png", "rb") as fh:
+            f = discord.File(fh, filename="images/saida.png")
         await message.channel.send(file=f)
 
     else:
         await message.channel.send("Por favor, mande uma imagem.")
 
 
+def GetSides(pos:tuple, tamX:int, tamY:int):
 
-def pegar_lados(pos:tuple, tamX, tamY):
-
-    saida = []
+    output = []
 
     if ((pos[0] - 1) >= 0 and (pos[0] - 1) <= tamX):
-        saida.append((pos[0] - 1, pos[1]))
+        output.append((pos[0] - 1, pos[1]))
 
     if ((pos[0] + 1) >= 0 and (pos[0] + 1) <= tamX):
-        saida.append((pos[0] + 1, pos[1]))
+        output.append((pos[0] + 1, pos[1]))
 
     if ((pos[1] - 1) >= 0 and (pos[1] - 1) <= tamY):
-        saida.append((pos[0], pos[1] - 1))
+        output.append((pos[0], pos[1] - 1))
 
     if ((pos[1] + 1) >= 0 and (pos[1] + 1) <= tamY):
-        saida.append((pos[0], pos[1] + 1))  
+        output.append((pos[0], pos[1] + 1))  
 
-    return saida
+    return output
+
+def DownloadImage(url:str):
+    image = get(url).content
+    file = open("images/tmp.png","wb")
+    file.write(image)
+
+def WelcomeImage(username:str,image:str,server:int):
+    DownloadImage(image)
+    base = Image.open(f"images/back{server}.png")
+    user = Image.open("images/tmp.png").resize((128,128))
+    base.paste(user,(20,348))
+    base.save(f"images/{username}.png")
