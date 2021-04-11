@@ -76,10 +76,7 @@ async def BackgroundRemover(message):
                 checar.pop(0)
                 continue
 
-            for A in GetSides(px, imgX, imgY):
-
-                if pixels[A[0], A[1]] == cor_esperada:
-                    checar.add((A[0], A[1]))
+            checar.update([A for A in GetSides(px, imgX, imgY) if pixels[A[0], A[1]] == cor_esperada])
 
 
             pixels[px[0], px[1]] = cor_alvo
