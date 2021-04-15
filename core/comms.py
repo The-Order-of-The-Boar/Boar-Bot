@@ -6,10 +6,10 @@ from os import environ
 
 from commands import messages,rank,server,misc
 
-prefix = {"std":"b","mod":"bm"}
+prefix = {"std":"b","alt":"🐗","mod":"bm"}
 #Defines the prefix accordingly to the bot host
 if(not "DYNO" in environ):
-    prefix = {"std":"d","mod":"dm"}
+    prefix = {"std":"d","alt":"🐷","mod":"dm"}
 
 
             
