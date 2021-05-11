@@ -1,6 +1,8 @@
 from PIL import Image
 from requests import get
+from datetime import datetime
 import discord
+
 
 async def Boar(message):
     await message.channel.send("Ninguém é maior que o Javali!!!!")
@@ -16,6 +18,18 @@ async def Ctest(message):
     a = test.disc_test().decode()
 
     await message.channel.send(a)
+
+async def first500(message):
+    if (not message.guild.id == 272166101025161227):
+        return
+    
+    date500 = datetime(2021, 5, 10, 23, 10)
+    if(message.author.joined_at < date500):   
+        role = message.guild.get_role(841500835409952818)
+        await message.author.add_roles(role)
+        await message.channel.send("Parabéns camarada! Você está apto a receber o cargo dos primeiros 500 camaradas a pisarem em Vai-Quem-Quer!")
+    else:
+        await message.channel.send("Seu pilantra! Você não é um dos 500 primeiros camaradas :rage: ")
 
 async def BackgroundRemover(message):
     if len(message.attachments) > 0:

@@ -182,6 +182,10 @@ async def ParseCommand(message,client):
     elif(command=="remove"):
 
         await misc.BackgroundRemover(message)
+    
+    elif(command=="fiveHundred"):
+
+        await misc.first500(message)
 
 
 
