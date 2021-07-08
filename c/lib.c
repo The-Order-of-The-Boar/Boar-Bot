@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 void print_test(){
-    printf("Hentai");
+    printf("Boar");
 }
 
 int ret_test(){
