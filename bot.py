@@ -1,7 +1,8 @@
 ##############################################################################################
 import discord
 from datetime import datetime
-
+import sys
+from psycopg2.errors import ForeignKeyViolation
 
 
 
@@ -60,16 +61,20 @@ async def on_member_join(member):
 #################################Message#####################################################
 @client.event
 async def on_message(message):
-    
-    messages.CountMessage(message.guild.id)
-
+    try:
+        messages.CountMessage(message.guild.id)
+        if(message.channel.id != 770107741585932339):
+            char_amount = len(message.content) - message.content.count(" ")
+            rank.countPoints(message.guild.id,message.author.id,char_amount)
+    except ForeignKeyViolation:
+        print("Reinvite the bot to the server!")
+        await message.channel.send("Reinvite the bot to the server!")
+        
+        sys.exit()
     #Ignores bot commands and rank
     if message.author.bot:
         return
 
-    if(message.channel.id != 770107741585932339):
-        char_amount = len(message.content) - message.content.count(" ")
-        rank.countPoints(message.guild.id,message.author.id,char_amount)
     await comms.ParseCommand(message,client)
 
 
