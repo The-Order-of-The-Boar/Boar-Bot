@@ -1,7 +1,7 @@
-from PIL import Image
 from requests import get
 from datetime import datetime
 import discord
+import remove_boar
 
 
 async def Boar(message):
@@ -12,7 +12,7 @@ async def Capital(message):
 
 async def Ctest(message):
     import ctypes
-    test = ctypes.CDLL("libtest.so")
+    test = ctypes.cdll.LoadLibrary('./c/test.so')
 
     test.disc_test.restype = ctypes.c_char_p
     a = test.disc_test().decode()
@@ -42,86 +42,13 @@ async def BackgroundRemover(message):
         await message.channel.send("Processando...")
         r_command = message.content.split()
 
-        cor_esperada = (255, 255, 255, 255)
-        cor_alvo = (255, 255, 255, 0)
-
         await attachment.save("images/tmp.png")
-        img = Image.open("images/tmp.png").convert("RGBA")
-        
-        pixels = img.load()
-
-        if len(r_command) > 4:
-            print(r_command)
-            cor_esperada = (int(r_command[2]), int(r_command[3]), int(r_command[4]), 255)
-        else:
-            cor_esperada = img.getpixel((0,0))
-
-        cor_alvo = (0,0,0,0)
-        print(cor_esperada)
-        print(cor_alvo)
-        #cor_alvo = (255, 255, 255, 255)
-
-        imgX, imgY = img.size
-        imgX, imgY = imgX-1, imgY-1
-
-        checar = set()
-
-        for A in range(imgX+1):
-
-            if pixels[A, 0] == cor_esperada:
-                checar.add((A, 0))
-
-            if pixels[A, imgY] == cor_esperada:
-                checar.add((A, imgY))
-
-        for A in range(imgY+1):
-
-            if pixels[0, A] == cor_esperada:
-                checar.add((0, A))
-
-            if pixels[imgX, A] == cor_esperada:
-                checar.add((imgX, A))
-
-        while len(checar) > 0:
-
-            px = checar.pop()
-
-            if pixels[px[0], px[1]] == cor_alvo:
-                checar.pop(0)
-                continue
-
-            checar.update([A for A in GetSides(px, imgX, imgY) if pixels[A[0], A[1]] == cor_esperada])
-
-
-            pixels[px[0], px[1]] = cor_alvo
-
-        img.save("images/saida.png")
-
+        remove_boar.backgroundremover("images/tmp.png")
         with open("images/saida.png", "rb") as fh:
             f = discord.File(fh, filename="images/saida.png")
         await message.channel.send(file=f)
-
-    else:
+    else: 
         await message.channel.send("Por favor, mande uma imagem.")
-
-
-def GetSides(pos:tuple, tamX:int, tamY:int):
-
-    output = []
-
-    if ((pos[0] - 1) >= 0 and (pos[0] - 1) <= tamX):
-        output.append((pos[0] - 1, pos[1]))
-
-    if ((pos[0] + 1) >= 0 and (pos[0] + 1) <= tamX):
-        output.append((pos[0] + 1, pos[1]))
-
-    if ((pos[1] - 1) >= 0 and (pos[1] - 1) <= tamY):
-        output.append((pos[0], pos[1] - 1))
-
-    if ((pos[1] + 1) >= 0 and (pos[1] + 1) <= tamY):
-        output.append((pos[0], pos[1] + 1))  
-
-    return output
 
 def DownloadImage(url:str):
     image = get(url).content
