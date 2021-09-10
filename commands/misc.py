@@ -12,7 +12,7 @@ async def Capital(message):
 
 async def Ctest(message):
     import ctypes
-    test = ctypes.cdll.LoadLibrary('./c/test.so')
+    test = ctypes.CDLL("libtest.so")
 
     test.disc_test.restype = ctypes.c_char_p
     a = test.disc_test().decode()
