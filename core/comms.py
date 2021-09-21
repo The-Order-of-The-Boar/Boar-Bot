@@ -166,6 +166,10 @@ async def ParseCommand(message,client):
 
         await messages.Record(message)
 
+    elif(command=="arecord"):
+
+        await messages.AntiRecord(message)
+
     elif(command=="average"):
         
         await messages.Average(message)
