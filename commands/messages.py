@@ -192,6 +192,16 @@ async def Record(message):
 
     await message.channel.send(embed=embed,content=None)
 
+async def AntiRecord(message):
+    """Gets the days with the smallest amount of messages"""
+
+    data = db.custom_retrieve(f"SELECT date,num FROM Messages WHERE server = {message.guild.id} ORDER BY num LIMIT 20 ")
+
+    table = utils.genTableString(data,["Data","Mensagens"])
+    embed = utils.genEmbed("Tabela de Anti-Recordes",table,descp="Dias com os menores números \nde mensagens enviadas ")
+
+    await message.channel.send(embed=embed,content=None)
+
 async def Average(message):
     """Gets the daily messages average from the given amount of days ago"""
 
