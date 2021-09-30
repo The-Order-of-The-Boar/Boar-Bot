@@ -43,7 +43,7 @@ async def BackgroundRemover(message):
         r_command = message.content.split()
 
         await attachment.save("images/tmp.png")
-        remove_boar.background_remover("images/tmp.png")
+        remove_boar.background_remover("images/tmp.png", "images/saida.png")
         with open("images/saida.png", "rb") as fh:
             f = discord.File(fh, filename="images/saida.png")
         await message.channel.send(file=f)
