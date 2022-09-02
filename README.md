@@ -1,7 +1,7 @@
 <h1 align="center">Boar Bot</h1>
  
  <p align="center"><i> Official discord bot for The Order of The Boar Discord server.<br>
- Join us and call it's commands at: https://discord.gg/rpUv8fe </i></p>  
+
  
  <h3><b>How to run on your machine</b></h3>
  <br>1 - Pip install all libaries listed on "requirements.txt"
