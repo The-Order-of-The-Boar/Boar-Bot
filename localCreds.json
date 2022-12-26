@@ -2,7 +2,7 @@
     "host" : "localhost",
     "database": "postgres",
     "user": "postgres",
-    "password" : "",
+    "password" : "ola",
     "port" : 5432
 
 }

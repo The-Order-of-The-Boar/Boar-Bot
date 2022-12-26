@@ -7,7 +7,7 @@ boarbot/
 *localCreds.json
 
 *png
-
+*.env
 *.json
 *.csv
 *.o

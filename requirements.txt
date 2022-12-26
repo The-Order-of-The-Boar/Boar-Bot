@@ -2,4 +2,4 @@
 psycopg2
 python-dateutil
 requests
-pillow
+remove_boar
